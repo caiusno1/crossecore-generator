@@ -16,27 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.crossecore.typescript;
+package com.crossecore.java
 
-import org.eclipse.emf.ecore.EDataType
+import com.crossecore.EcoreVisitor
 import org.eclipse.emf.ecore.EPackage
-import org.eclipse.emf.ecore.EAttribute
-import org.eclipse.emf.ecore.EClassifier
-import org.eclipse.emf.ecore.EClass
-import org.eclipse.emf.ecore.EReference
-import org.eclipse.emf.ecore.EEnum
-import com.crossecore.IdentifierProvider
-import com.crossecore.DependencyManager
-import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.emf.ecore.EcorePackage
-import com.crossecore.Utils
-import com.crossecore.ImportManager
-import com.crossecore.TypeTranslator
-import java.util.ArrayList
 
-class NpmPackageGenerator extends TypeScriptVisitor{
-	
-	private TypeScriptIdentifier id = new TypeScriptIdentifier();
+class GradleSettingsGenerator extends EcoreVisitor{
 	
 	new(){
 		super();
@@ -46,32 +31,13 @@ class NpmPackageGenerator extends TypeScriptVisitor{
 		super(path, filenamePattern, epackage);
 
 	}
-
 	
 	override caseEPackage(EPackage epackage){
-		
-		return 
-		'''
-		{
-		  "name": "«epackage.name»",
-		  "version": "1.0.0",
-		  "scripts": {
-		    "build": "tsc -p .",
-		    "test": "jest"
-		  },
-		  "main": "lib/index.js",
-		  "private": true,
-		  "dependencies": {
-		  	"crossecore": "^0.1.0"
-		  },
-		  "devDependencies": {
-		    "typescript": "~3.5.2",
-		  	"jest": "^24.8.0"
-		  }
-		}
-		'''
 
+		'''
+		rootProject.name = '«epackage.name»'
+		'''
 	}
 	
-
+	
 }

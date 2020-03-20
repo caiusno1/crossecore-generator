@@ -43,7 +43,7 @@ class VisualStudioProjectGenerator extends CSharpVisitor{
 		  </PropertyGroup>
 		  
 		  <ItemGroup>
-		    <PackageReference Include="CrossEcore" Version="1.0.0-alpha" />
+		    <PackageReference Include="Com.CrossEcore.Ecore" Version="0.1.0" />
 		  </ItemGroup>
 		
 		</Project>
