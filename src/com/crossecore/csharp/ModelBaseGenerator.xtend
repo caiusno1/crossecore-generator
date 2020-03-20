@@ -418,7 +418,7 @@ class ModelBaseGenerator extends CSharpVisitor{
 			}
 		«ELSE»
 			«IF !eattribute.derived»
-			private «t.translateType(eattribute.EGenericType)» «id.privateEStructuralFeature(eattribute)» = «t.defaultValue(eattribute.EType)»;
+			private «t.translateType(eattribute.EGenericType)» «id.privateEStructuralFeature(eattribute)» = «t.defaultValue(eattribute.EType)»«IF t.translateType(eattribute.EGenericType).equals("float")»f«ENDIF»;
 			«ENDIF»
 			public virtual «t.translateType(eattribute.EGenericType)» «id.doSwitch(eattribute)»
 			{
