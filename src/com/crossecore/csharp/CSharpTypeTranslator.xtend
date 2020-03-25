@@ -24,10 +24,72 @@ import org.eclipse.emf.ecore.EDataType
 import org.eclipse.emf.ecore.EcorePackage
 import com.crossecore.IdentifierProvider
 import org.eclipse.emf.ecore.EPackage
+import java.util.HashMap
+import java.util.Set
+import java.util.HashSet
+import org.eclipse.emf.ecore.EClassifier
+import java.util.ArrayList
+import java.util.Arrays
 
 class CSharpTypeTranslator extends TypeTranslator {
 	
 	public static CSharpTypeTranslator INSTANCE = new CSharpTypeTranslator(new IdentifierProvider());
+	private HashMap<EPackage, Set<String>> packages2 = new HashMap<EPackage, Set<String>>();
+
+	public def clearImports() {
+		packages2.clear;
+	}
+
+	public def void import_(EPackage epackage, String name) {
+		// TODO name conflicts from different packages
+		var epackage_ = if(epackage.nsURI.equals("http://www.eclipse.org/emf/2002/Ecore")) EcorePackage.eINSTANCE else epackage;
+		if (!packages2.containsKey(epackage_)) {
+			packages2.put(epackage_, new HashSet<String>());
+		}
+		var eClassifierNames = packages2.get(epackage_);
+		eClassifierNames.add(name);
+		packages2.put(epackage_, eClassifierNames);
+	}
+	
+	public def void import_(EClassifier eclassifier) {
+
+		if(eclassifier instanceof EDataType === false){
+			
+			import_(eclassifier.EPackage, eclassifier.name);
+		}
+	}
+
+	def String printImports(EPackage self_) {
+
+		var result = new StringBuffer();
+
+		for (EPackage epackage : packages2.keySet) {
+
+			var list = new ArrayList<String>(packages2.get(epackage));
+
+			Arrays.sort(list);
+
+			for (String name : list) {
+				
+				result.append('''using «epackage.name».«name»;'''+"\n");
+				
+				/*
+				if(!Utils.isEqual(epackage,self_) && Utils.isEcoreEPackage(epackage)){
+					result.append('''import {«name»} from "crossecore";''');
+					result.append("\n");
+				}else{
+					result.append('''import {«name»} from "«epackage.name»/«name»";''');
+					result.append("\n");	
+				}
+				*/
+					
+			}
+
+		}
+
+		return result.toString;
+
+	}
 
 	
 	new(IdentifierProvider _id) {

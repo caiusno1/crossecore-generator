@@ -38,6 +38,7 @@ import com.crossecore.TypeTranslator
 
 import org.eclipse.ocl.ecore.utilities.AbstractVisitor;
 import java.util.Set
+import org.eclipse.emf.ecore.EDataType
 
 class ModelGenerator extends CSharpVisitor{
 	
@@ -74,10 +75,11 @@ class ModelGenerator extends CSharpVisitor{
 		var Set<EClassifier> eclassifiers = new HashSet<EClassifier>(sortedEClasses.toSet);
 		eclassifiers.addAll(epackage.EClassifiers);	
 		
-		
+
 		for(EClassifier classifier: eclassifiers){
 			var contents =
 				'''
+				«IF classifier instanceof EClass == false »
 				«header» 	
 				using System;
 				using System.Collections.Generic;
@@ -90,6 +92,9 @@ class ModelGenerator extends CSharpVisitor{
 				namespace «id.doSwitch(epackage)»{
 					«doSwitch(classifier)»
 				}
+				«ELSE»
+				«doSwitch(classifier)»
+				«ENDIF»
 				'''
 			write(classifier, contents);
 		}
@@ -98,21 +103,50 @@ class ModelGenerator extends CSharpVisitor{
 	
 	}
 	
-	override caseEClass(EClass e) '''
-		
-		public interface «id.doSwitch(e)» «FOR ETypeParameter param : e.ETypeParameters BEFORE '<' SEPARATOR ',' AFTER '>'»«id.doSwitch(param)»«ENDFOR»
-		«IF e.ESuperTypes.empty && !Utils.isEClassifierForEObject(e)»
-			: EObject
-		«ELSEIF (Utils.isEClassifierForEObject(e))»
-			: Notifier
-		«ELSE»
-			«FOR EClassifier supertype:e.ESuperTypes BEFORE ': ' SEPARATOR ', '»«IF !e.EPackage.equals(supertype.EPackage)»«id.doSwitch(supertype.EPackage)».«ENDIF»«id.doSwitch(supertype)»«ENDFOR»
-		«ENDIF»
-		{
-			«FOR EStructuralFeature feature:e.EStructuralFeatures»«doSwitch(feature)»«ENDFOR»
-			«FOR EOperation operation:e.EOperations»«doSwitch(operation)»«ENDFOR»
+	override caseEClass(EClass e)
+	{
+		var importSet = new HashSet<String>();
+		for(EAttribute attr: e.EAllAttributes){
+			if( t.mapPrimitiveType((attr.getEType()) as EDataType) == null) {
+				var imp = (attr.EType as EDataType).instanceTypeName;
+				if(imp!=null){
+					importSet.add(imp.substring(0,imp.lastIndexOf(".")));
+				}	
+				else{
+					
+				}
+			}
+		}
+		return
+		'''
+		«header» 	
+		using System;
+		using System.Collections.Generic;
+		using System.Linq;
+		using System.Text;
+		using oclstdlib;
+	 	«IF !Utils.isEcoreEPackage(e.EPackage)»
+		using Ecore;
+	 	«ENDIF»
+		«FOR imp: importSet»
+			using «imp»;
+		«ENDFOR»
+		namespace «id.doSwitch(epackage)»{
+			public interface «id.doSwitch(e)» «FOR ETypeParameter param : e.ETypeParameters BEFORE '<' SEPARATOR ',' AFTER '>'»«id.doSwitch(param)»«ENDFOR»
+			«IF e.ESuperTypes.empty && !Utils.isEClassifierForEObject(e)»
+				: EObject
+			«ELSEIF (Utils.isEClassifierForEObject(e))»
+				: Notifier
+			«ELSE»
+				«FOR EClassifier supertype:e.ESuperTypes BEFORE ': ' SEPARATOR ', '»«IF !e.EPackage.equals(supertype.EPackage)»«id.doSwitch(supertype.EPackage)».«ENDIF»«id.doSwitch(supertype)»«ENDFOR»
+			«ENDIF»
+			{
+				«FOR EStructuralFeature feature:e.EStructuralFeatures»«doSwitch(feature)»«ENDFOR»
+				«FOR EOperation operation:e.EOperations»«doSwitch(operation)»«ENDFOR»
+			}
 		}
 	'''
+	}
 		
 	override caseEEnum(EEnum eenum) {
 		return 

@@ -24,6 +24,8 @@ import java.util.List
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.ETypeParameter
+import com.crossecore.ImportManager
+import com.crossecore.TypeTranslator
 
 class ModelImplGenerator extends CSharpVisitor{
 	

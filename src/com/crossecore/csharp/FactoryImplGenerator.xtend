@@ -26,6 +26,7 @@ import com.crossecore.IdentifierProvider
 import org.eclipse.emf.ecore.EDataType
 import org.eclipse.emf.ecore.EEnum
 import com.crossecore.TypeTranslator
+import org.eclipse.emf.ecore.impl.EEnumImpl
 
 class FactoryImplGenerator extends CSharpVisitor {
 	
@@ -57,6 +58,10 @@ class FactoryImplGenerator extends CSharpVisitor {
 		var edatatypes = epackage.EClassifiers.filter[c|c instanceof EDataType].map[c|c as EDataType];
 		//var eenums = epackage.EClassifiers.filter[c|c instanceof EEnum].map[c|c as EEnum];
 		
+		var importSet = edatatypes
+		.filter[dt|dt instanceof EEnumImpl == false]
+		.map[dt|dt.instanceClassName.substring(0,dt.instanceClassName.lastIndexOf("."))]
+		.toSet();
 		
 		'''
 		«header»
@@ -65,7 +70,10 @@ class FactoryImplGenerator extends CSharpVisitor {
 	 	«ENDIF»
 		using System;
 		using System.IO;
-		using System.Runtime.Serialization.Formatters.Binary;	 	
+		using System.Runtime.Serialization.Formatters.Binary;	
+		«FOR edt: importSet»
+		using «edt»;
+		«ENDFOR» 	
 		namespace «id.doSwitch(epackage)»{
 			public class «id.EPackageFactoryImpl(epackage)» : EFactoryImpl, «id.EPackageFactory(epackage)» {
 				

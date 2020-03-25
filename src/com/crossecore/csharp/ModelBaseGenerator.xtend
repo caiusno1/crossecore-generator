@@ -34,6 +34,9 @@ import org.eclipse.emf.ecore.ETypeParameter
 import com.crossecore.TypeTranslator
 import org.eclipse.emf.common.util.BasicEMap
 import org.eclipse.emf.common.util.BasicEList
+import com.crossecore.ImportManager
+import org.eclipse.emf.ecore.EDataType
+import java.util.HashMap
 
 class ModelBaseGenerator extends CSharpVisitor{
 	
@@ -71,7 +74,18 @@ class ModelBaseGenerator extends CSharpVisitor{
 		//eclassifiers.removeAll(sortedEClasses);
 		
 		for(EClass eclass : sortedEClasses){
-			
+			var importSet = new HashSet<String>();
+			for(EAttribute attr: eclass.EAllAttributes){
+				if( t.mapPrimitiveType((attr.getEType()) as EDataType) == null) {
+					var imp = (attr.EType as EDataType).instanceTypeName;
+					if(imp!=null){
+						importSet.add(imp.substring(0,imp.lastIndexOf(".")));
+					}	
+					else{
+						
+					}
+				}
+			}
 			var contents = 	
 			'''
 			«header»
@@ -83,6 +97,9 @@ class ModelBaseGenerator extends CSharpVisitor{
 			«IF !Utils.isEcoreEPackage(epackage)»
 			using Ecore;
 			«ENDIF»
+			«FOR imp :importSet»
+				using «imp»;
+			«ENDFOR»
 			namespace «id.doSwitch(epackage)»{
 				«doSwitch(eclass)»
 			}
