@@ -47,7 +47,7 @@ public class IdentifierProvider extends EcoreSwitch<String>{
 	}
 	
 	private def String _caseEPackage(EPackage epackage){
-		var name = epackage.name.toFirstUpper;
+		var name = epackage.nsPrefix.toFirstUpper;
 		
 		return name;
 	}

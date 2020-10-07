@@ -23,8 +23,11 @@ sourceSets {
     }
 }
 
-
-compileJava.options.encoding = "UTF-8"
+compileJava   {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+    options.encoding = "UTF-8"
+}
 
 task customFatJar(type: Jar) {
     manifest {

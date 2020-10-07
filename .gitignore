@@ -15,6 +15,13 @@ local.properties
 .loadpath
 .recommenders
 
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
+
 # External tool builders
 .externalToolBuilders/
 
