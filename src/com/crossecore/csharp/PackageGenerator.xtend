@@ -71,7 +71,7 @@ class PackageGenerator extends CSharpVisitor{
 	 	using Ecore;
 	 	«ENDIF»
 		namespace «id.doSwitch(epackage)»{
-			public interface «id.doSwitch(epackage)»Package : EPackage {
+			public interface «id.EPackagePackage(epackage)» : EPackage {
 					
 				«FOR EClassifier eclassifier: sortedEClasses»
 					«doSwitch(eclassifier)»

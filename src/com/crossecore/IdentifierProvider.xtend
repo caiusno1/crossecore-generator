@@ -47,7 +47,7 @@ public class IdentifierProvider extends EcoreSwitch<String>{
 	}
 	
 	private def String _caseEPackage(EPackage epackage){
-		var name = epackage.nsPrefix.toFirstUpper;
+		var name = epackage.nsPrefix;
 		
 		return name;
 	}
@@ -227,6 +227,11 @@ public class IdentifierProvider extends EcoreSwitch<String>{
 	public	def EPackageSwitch(EPackage ePackage) {
 		var name = ePackage.name.toFirstUpper;
 		return name+"Switch";
+	}
+
+	public	def EPackageValidator(EPackage ePackage) {
+		var name = ePackage.name.toFirstUpper;
+		return name+"Validator";
 	}
 	
 	public def String getEClassifier(EClassifier e){

@@ -61,14 +61,14 @@ class ValidatorGenerator extends CSharpVisitor{
 	 	«ENDIF»
 	 	using System.Collections.Generic;
 		namespace «id.doSwitch(epackage)»{
-			public class «id.doSwitch(epackage)»Validator : EObjectValidator {
+			public class «id.EPackageValidator(epackage)» : EObjectValidator {
 	
 		        protected override bool validate(int classifierID, object value, DiagnosticChain diagnostics, Dictionary<object, object> context)
 		        {
 		            switch (classifierID)
 		            {
 						«FOR EClass eclass: eclasses»
-							case «id.doSwitch(eclass.EPackage)»PackageImpl.«id.doSwitch(eclass).toUpperCase»:
+							case «id.EPackagePackageImpl(eclass.EPackage)».«id.doSwitch(eclass).toUpperCase»:
 								return «id.validate(eclass)»((«id.doSwitch(eclass)»)value, diagnostics, context);	
 						«ENDFOR»
 		                

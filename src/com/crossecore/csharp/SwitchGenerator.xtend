@@ -54,20 +54,20 @@ class SwitchGenerator extends CSharpVisitor {
 	 	using Ecore;
 	 	«ENDIF»
 		namespace «id.doSwitch(epackage)»{
-			public class «id.doSwitch(epackage)»Switch<T> : Switch<T> {
+			public class «id.EPackageSwitch(epackage)»<T> : Switch<T> {
 	
-				protected static «id.doSwitch(epackage)»Package modelPackage;
+				protected static «id.EPackagePackage(epackage)» modelPackage;
 				
 				protected override bool isSwitchFor(EPackage ePackage)
 				{
 					return ePackage == modelPackage;
 				}
 		
-				public «id.doSwitch(epackage)»Switch()
+				public «id.EPackageSwitch(epackage)»()
 				{
 					if (modelPackage == null)
 					{
-						modelPackage = «id.doSwitch(epackage)»PackageImpl.eINSTANCE;
+						modelPackage = «id.EPackagePackageImpl(epackage)».eINSTANCE;
 					}
 				}
 				
@@ -100,7 +100,7 @@ class SwitchGenerator extends CSharpVisitor {
 		override caseEClass(EClass eclassifier){
 			var sortedEClasses = DependencyManager.sortEClasses(eclassifier.ESuperTypes)
 			'''
-			case «id.doSwitch(eclassifier.EPackage)»PackageImpl.«id.doSwitch(eclassifier).toUpperCase»: {
+			case «id.EPackagePackageImpl(eclassifier.EPackage)».«id.doSwitch(eclassifier).toUpperCase»: {
 				var «id.variable(eclassifier)» = («id.doSwitch(eclassifier)») theEObject;
 				var result = case«id.doSwitch(eclassifier)»(«id.variable(eclassifier)»);
 				
