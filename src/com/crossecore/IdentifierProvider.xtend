@@ -131,7 +131,7 @@ public class IdentifierProvider extends EcoreSwitch<String>{
 	public def String literalRef(EClassifier eclass){
 		
 		
-		return '''«_caseEPackage(eclass.EPackage)»PackageImpl.Literals.«literal(eclass)»''';
+		return '''«EPackagePackageImpl(eclass.EPackage)».Literals.«literal(eclass)»''';
 	}
 	
 	public def String literal(EClass eclass, EStructuralFeature feature){
@@ -148,14 +148,8 @@ public class IdentifierProvider extends EcoreSwitch<String>{
 		return '''«eclassname»___«efeaturename»''';
 	}
 	
-	public def String literalRef(EClass eclass, EStructuralFeature feature){
-		
-		
-		var epackagename = _caseEPackage(eclass.EPackage);
-		
-		
-		//TODO what to escape?
-		return '''«epackagename»PackageImpl.«literal(eclass, feature)»'''
+	public def String literalRef(EClass eclass, EStructuralFeature feature) {
+		return '''«EPackagePackageImpl(eclass.EPackage)».«literal(eclass, feature)»'''
 
 		
 	}
