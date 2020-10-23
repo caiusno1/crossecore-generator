@@ -299,9 +299,13 @@ class ModelBaseGenerator extends CSharpVisitor{
 								«IF feature instanceof EReference && (feature as EReference)?.containment && feature?.EType?.instanceClassName?.equals("java.util.Map$Entry")»
 								((EcoreEMap<«t.translateType((feature.EType as EClass).getEStructuralFeature("key").EType)», «t.translateType((feature.EType as EClass).getEStructuralFeature("value").EType)»>)«id.doSwitch(feature)»).set(newValue);
 								return;
-								«ELSEIF feature.many»
+								«ELSEIF feature.many»						
 									«id.doSwitch(feature)».Clear();
+									«IF t.translateType(feature.EGenericType).equals("string")»
+									«id.doSwitch(feature)».AddRange(((List<«t.translateType(feature.EGenericType)»>)newValue));
+									«ELSE»
 									«id.doSwitch(feature)».AddRange(((List<EObject>)newValue)?.Cast<«t.translateType(feature.EGenericType)»>());
+									«ENDIF»
 									return;
 								«ELSE»
 									«id.doSwitch(feature)» = («t.translateType(feature.EGenericType)») newValue;
